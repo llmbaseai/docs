@@ -1,0 +1,735 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI Plant Store",
+    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "license": {
+      "name": "MIT"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.llmbase.io"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/models": {
+      "get": {
+        "description": "Lists all available open-source models",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Model"
+                  }
+                }
+              },
+              "example": [
+                {
+                  "id": "deepseek-ai/DeepSeek-R1",
+                  "name": "DeepSeek-R1",
+                  "organization": "DeepSeek",
+                  "type": "chat",
+                  "context_length": 128000,
+                  "pricing": {
+                    "input": 3,
+                    "output": 5
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a new plant in the store",
+        "requestBody": {
+          "description": "Plant to add to the store",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewPlant"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "plant response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plant"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/completions": {
+      "post": {
+        "summary": "Generate text completions",
+        "description": "OpenAI-compliant completions API for generating a single text completion based on a given prompt. Supports both stream and non-stream responses.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompletionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful text completion response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompletionResponse"
+                },
+                "examples": {
+                  "nonStream": {
+                    "value": {
+                      "id": "cmpl-abc123",
+                      "object": "text_completion",
+                      "created": 1234567890,
+                      "model": "text-davinci-003",
+                      "choices": [
+                        {
+                          "text": "This is a completion.",
+                          "index": 0,
+                          "logprobs": null,
+                          "finish_reason": "stop"
+                        }
+                      ],
+                      "usage": {
+                        "prompt_tokens": 10,
+                        "completion_tokens": 5,
+                        "total_tokens": 15
+                      }
+                    }
+                  }
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompletionResponse"
+                },
+                "examples": {
+                  "stream": {
+                    "value": {
+                      "id": "cmpl-abc123",
+                      "object": "text_completion",
+                      "created": 1234567890,
+                      "model": "text-davinci-003",
+                      "choices": [
+                        {
+                          "text": "Streaming completion chunk",
+                          "index": 0,
+                          "logprobs": null,
+                          "finish_reason": null
+                        }
+                      ],
+                      "usage": {
+                        "prompt_tokens": 10,
+                        "completion_tokens": 5,
+                        "total_tokens": 15
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/chat/completions": {
+      "post": {
+        "summary": "Generate chat completions",
+        "description": "OpenAI-compliant chat completions API designed for conversations—it accepts a series of messages (with roles like 'user' and 'assistant') to generate a chat-style response. Supports both stream and non-stream responses.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatCompletionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful chat completion response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatCompletionResponse"
+                },
+                "examples": {
+                  "nonStream": {
+                    "value": {
+                      "id": "chatcmpl-abc123",
+                      "object": "chat.completion",
+                      "created": 1234567890,
+                      "model": "gpt-3.5-turbo",
+                      "choices": [
+                        {
+                          "message": {
+                            "role": "assistant",
+                            "content": "Hello, how can I help you?"
+                          },
+                          "index": 0,
+                          "finish_reason": "stop"
+                        }
+                      ],
+                      "usage": {
+                        "prompt_tokens": 12,
+                        "completion_tokens": 8,
+                        "total_tokens": 20
+                      }
+                    }
+                  }
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatCompletionResponse"
+                },
+                "examples": {
+                  "stream": {
+                    "value": {
+                      "id": "chatcmpl-abc123",
+                      "object": "chat.completion",
+                      "created": 1234567890,
+                      "model": "gpt-3.5-turbo",
+                      "choices": [
+                        {
+                          "message": {
+                            "role": "assistant",
+                            "content": "Streaming chat message chunk"
+                          },
+                          "index": 0,
+                          "finish_reason": null
+                        }
+                      ],
+                      "usage": {
+                        "prompt_tokens": 12,
+                        "completion_tokens": 8,
+                        "total_tokens": 20
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plants": {
+      "get": {
+        "description": "Returns all plants from the system that the user has access to",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of results to return",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Plant response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Plant"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a new plant in the store",
+        "requestBody": {
+          "description": "Plant to add to the store",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewPlant"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "plant response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plant"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/plants/{id}": {
+      "delete": {
+        "description": "Deletes a single plant based on the ID supplied",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of plant to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Plant deleted",
+            "content": {}
+          },
+          "400": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {
+    "/plant/webhook": {
+      "post": {
+        "description": "Information about a new plant added to the store",
+        "requestBody": {
+          "description": "Plant added to the store",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewPlant"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Model": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The identifier for the model",
+            "type": "string"
+          },
+          "name": {
+            "description": "Display name of the model",
+            "type": "string"
+          },
+          "organization": {
+            "description": "Organization that created the model",
+            "type": "string"
+          },
+          "type": {
+            "description": "Type of model e.g. 'chat' or 'image'",
+            "type": "string"
+          },
+          "context_length": {
+            "description": "The maximum length of the context",
+            "type": "integer"
+          },
+          "pricing": {
+            "description": "Pricing information for the model",
+            "type": "object",
+            "properties": {
+              "input": {
+                "description": "Price per million input tokens",
+                "type": "number"
+              },
+              "output": {
+                "description": "Price per million output tokens",
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "CompletionRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "ID of the model to use"
+          },
+          "prompt": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "The prompt(s) for generating a completion"
+          },
+          "max_tokens": {
+            "type": "integer",
+            "description": "The maximum number of tokens to generate"
+          },
+          "stream": {
+            "type": "boolean",
+            "description": "Whether to stream the response"
+          }
+        },
+        "required": [
+          "model",
+          "prompt"
+        ]
+      },
+      "CompletionResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the completion"
+          },
+          "object": {
+            "type": "string",
+            "description": "Object type, e.g., 'text_completion'"
+          },
+          "created": {
+            "type": "integer",
+            "description": "Creation timestamp"
+          },
+          "model": {
+            "type": "string",
+            "description": "The model used for the completion"
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "description": "The generated text"
+                },
+                "index": {
+                  "type": "integer",
+                  "description": "The index of the generated choice"
+                },
+                "logprobs": {
+                  "type": "object",
+                  "nullable": true,
+                  "description": "Log probabilities of tokens"
+                },
+                "finish_reason": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "The reason for finishing the generation"
+                }
+              },
+              "required": [
+                "text",
+                "index"
+              ]
+            }
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "prompt_tokens": {
+                "type": "integer"
+              },
+              "completion_tokens": {
+                "type": "integer"
+              },
+              "total_tokens": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "prompt_tokens",
+              "completion_tokens",
+              "total_tokens"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "object",
+          "created",
+          "model",
+          "choices",
+          "usage"
+        ]
+      },
+      "ChatCompletionRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "ID of the model to use"
+          },
+          "messages": {
+            "type": "array",
+            "description": "List of messages in the conversation",
+            "items": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "description": "Role of the message (e.g., 'system', 'user', 'assistant')"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "The content of the message"
+                }
+              },
+              "required": [
+                "role",
+                "content"
+              ]
+            }
+          },
+          "stream": {
+            "type": "boolean",
+            "description": "Whether to stream the response"
+          }
+        },
+        "required": [
+          "model",
+          "messages"
+        ]
+      },
+      "ChatCompletionResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the chat completion"
+          },
+          "object": {
+            "type": "string",
+            "description": "Object type, e.g., 'chat.completion'"
+          },
+          "created": {
+            "type": "integer",
+            "description": "Creation timestamp"
+          },
+          "model": {
+            "type": "string",
+            "description": "The model used for the chat completion"
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "role": {
+                      "type": "string",
+                      "description": "Role of the message (e.g., 'assistant')"
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Content of the message"
+                    }
+                  },
+                  "required": [
+                    "role",
+                    "content"
+                  ]
+                },
+                "index": {
+                  "type": "integer",
+                  "description": "The index of the generated choice"
+                },
+                "finish_reason": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "The reason for finishing the chat generation"
+                }
+              },
+              "required": [
+                "message",
+                "index"
+              ]
+            }
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "prompt_tokens": {
+                "type": "integer"
+              },
+              "completion_tokens": {
+                "type": "integer"
+              },
+              "total_tokens": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "prompt_tokens",
+              "completion_tokens",
+              "total_tokens"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "object",
+          "created",
+          "model",
+          "choices",
+          "usage"
+        ]
+      },
+      "Plant": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The name of the plant",
+            "type": "string"
+          },
+          "tag": {
+            "description": "Tag to specify the type",
+            "type": "string"
+          }
+        }
+      },
+      "NewPlant": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Plant"
+          },
+          {
+            "required": [
+              "id"
+            ],
+            "type": "object",
+            "properties": {
+              "id": {
+                "description": "Identification number of the plant",
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        ]
+      },
+      "Error": {
+        "required": [
+          "error",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
