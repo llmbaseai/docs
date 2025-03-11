@@ -34,7 +34,20 @@
                     "$ref": "#/components/schemas/Model"
                   }
                 }
-              }
+              },
+              "example": [
+                {
+                  "id": "deepseek-ai/DeepSeek-R1",
+                  "name": "DeepSeek-R1",
+                  "organization": "DeepSeek",
+                  "type": "chat",
+                  "context_length": 128000,
+                  "pricing": {
+                    "input": 3,
+                    "output": 5
+                  }
+                }
+              ]
             }
           },
           "400": {
@@ -239,6 +252,10 @@
           "type": {
             "description": "Type of model e.g. 'chat' or 'image'",
             "type": "string"
+          },
+          "context_length": {
+            "description": "The maximum length of the context",
+            "type": "integer"
           },
           "pricing": {
             "description": "Pricing information for the model",
