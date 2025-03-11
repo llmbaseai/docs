@@ -35,7 +35,7 @@
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "REST API",
         "groups": [
           {
             "group": "API Documentation",
@@ -52,10 +52,8 @@
           {
             "group": "Inference API",
             "pages": [
-              "rest-api/inference/get",
-              "rest-api/inference/create",
-              "rest-api/inference/delete",
-              "rest-api/inference/webhook"
+              "rest-api/inference/completions",
+              "rest-api/inference/chat-completions"
             ]
           }
         ]
