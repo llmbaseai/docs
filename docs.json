@@ -52,8 +52,8 @@
           {
             "group": "Inference API",
             "pages": [
-              "rest-api/inference/completions",
-              "rest-api/inference/chat-completions"
+              "rest-api/inference/completion",
+              "rest-api/inference/chat-completion"
             ]
           }
         ]
