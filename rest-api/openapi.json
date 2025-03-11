@@ -102,7 +102,7 @@
     "/v1/completions": {
       "post": {
         "summary": "Generate text completions",
-        "description": "OpenAI-compliant completions API that always returns usage in both stream and non-stream responses.",
+        "description": "OpenAI-compliant completions API for generating a single text completion based on a given prompt. Supports both stream and non-stream responses.",
         "requestBody": {
           "required": true,
           "content": {
@@ -181,7 +181,7 @@
     "/v1/chat/completions": {
       "post": {
         "summary": "Generate chat completions",
-        "description": "OpenAI-compliant chat completions API that always returns usage in both stream and non-stream responses.",
+        "description": "OpenAI-compliant chat completions API designed for conversations—it accepts a series of messages (with roles like 'user' and 'assistant') to generate a chat-style response. Supports both stream and non-stream responses.",
         "requestBody": {
           "required": true,
           "content": {
