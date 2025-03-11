@@ -40,16 +40,22 @@
           {
             "group": "API Documentation",
             "pages": [
-              "api-reference/introduction"
+              "rest-api/introduction"
             ]
           },
           {
-            "group": "Endpoint Examples",
+            "group": "Models",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "rest-api/models/list"
+            ]
+          },
+          {
+            "group": "Inference API",
+            "pages": [
+              "rest-api/inference/get",
+              "rest-api/inference/create",
+              "rest-api/inference/delete",
+              "rest-api/inference/webhook"
             ]
           }
         ]

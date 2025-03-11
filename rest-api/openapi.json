@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "http://api.llmbase.io"
     }
   ],
   "security": [
@@ -19,6 +19,72 @@
     }
   ],
   "paths": {
+    "/v1/models": {
+      "get": {
+        "description": "Lists all available open-source models",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Model"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a new plant in the store",
+        "requestBody": {
+          "description": "Plant to add to the store",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewPlant"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "plant response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plant"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/plants": {
       "get": {
         "description": "Returns all plants from the system that the user has access to",
@@ -154,6 +220,44 @@
   },
   "components": {
     "schemas": {
+      "Model": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The identifier for the model",
+            "type": "string"
+          },
+          "name": {
+            "description": "Display name of the model",
+            "type": "string"
+          },
+          "organization": {
+            "description": "Organization that created the model",
+            "type": "string"
+          },
+          "type": {
+            "description": "Type of model e.g. 'chat' or 'image'",
+            "type": "string"
+          },
+          "pricing": {
+            "description": "Pricing information for the model",
+            "type": "opject",
+            "properties": {
+              "input": {
+                "description": "Price per million input tokens",
+                "type": "number"
+              },
+              "output": {
+                "description": "Price per million output tokens",
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
       "Plant": {
         "required": [
           "name"
