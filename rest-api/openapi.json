@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "http://api.llmbase.io"
+      "url": "https://api.llmbase.io"
     }
   ],
   "security": [
@@ -22,6 +22,7 @@
     "/v1/models": {
       "get": {
         "description": "Lists all available open-source models",
+        "security": [],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -221,9 +222,6 @@
   "components": {
     "schemas": {
       "Model": {
-        "required": [
-          "id"
-        ],
         "type": "object",
         "properties": {
           "id": {
@@ -244,7 +242,7 @@
           },
           "pricing": {
             "description": "Pricing information for the model",
-            "type": "opject",
+            "type": "object",
             "properties": {
               "input": {
                 "description": "Price per million input tokens",
